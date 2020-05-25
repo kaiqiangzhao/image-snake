@@ -66,16 +66,17 @@ class Snake:
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, name="Icon Snake"):
+        self.name = name
         self.window_width = config.WINDOW_WIDTH
         self.window_height = config.WINDOW_HEIGHT
         self._running = True
         self._display_surf = None
-        self._image_surf = None
+        self._snake_surf = None
         self._food_surf = None
-        self.snake = Snake(length=config.SNAKE_INIT_LEN)
-        rand_x, rand_y = self.rand_food_position()
-        self.food = Food(rand_x, rand_y)
+        self.snake = None
+        self.food = None
+        self.init_element()
 
     def rand_food_position(self):
         # TODO: 保证食物不会出现在蛇身体上
@@ -123,13 +124,20 @@ class Game:
             return False
         return True
 
-    def on_init(self):
+    def init_display_surf(self):
         pygame.init()
         self._display_surf = pygame.display.set_mode((self.window_width, self.window_height), 0, 32)
+        self._display_surf.fill(config.BACKGROUND)  # 背景
         pygame.display.set_caption("Icon Snake")
 
+    def init_word_surf(self):
+        font = pygame.font.Font("static/weimijianshu.otf", 50)
+        tip = font.render('按任意键开始 Icon Snake!!!', True, config.FONT_COLOR)
+        self._display_surf.blit(tip, ((self.window_width - tip.get_width()) / 2, (self.window_height - tip.get_height()) / 2))
+
+    def init_element_surf(self):
         self._running = True
-        self._image_surf = pygame.transform.scale(
+        self._snake_surf = pygame.transform.scale(
             pygame.image.load("./icon_basket/block.png").convert(),
             config.SNAKE_NODE_SIZE
         )
@@ -138,45 +146,43 @@ class Game:
             config.FOOD_SIZE,
         )
 
+    def init_element(self):
+        self.snake = Snake(length=config.SNAKE_INIT_LEN)
+        rand_x, rand_y = self.rand_food_position()
+        self.food = Food(rand_x, rand_y)
+
     def on_loop(self):
         self.snake.update()
 
         if self.is_collision_win(self.snake.x[0], self.snake.y[0]):
-            print("You lose! Collision: ")
-            print(self.snake.x[0], self.snake.y[0])
-            exit(0)
+            self._running = False
+            return None
 
         for i in range(2, self.snake.length):
             if self.is_collision_self(self.snake.x[0], self.snake.y[0], self.snake.x[i], self.snake.y[i]):
-                print("You lose! Collision: ")
-                print("x[0] (" + str(self.snake.x[0]) + "," + str(self.snake.y[0]) + ")")
-                print("x[" + str(i) + "] (" + str(self.snake.x[i]) + "," + str(self.snake.y[i]) + ")")
-                exit(0)
+                self._running = False
+                return None
 
         # 把食物当成蛇的一部分进行碰撞检测
         if self.is_collision_food(self.snake.x[0], self.snake.y[0], self.food.x, self.food.y):
             self.food.x, self.food.y = self.rand_food_position()
             self.snake.length = self.snake.length + 1
-            self.snake.x.append(0)
-            self.snake.y.append(0)
+            self.snake.x.append(self.food.x)
+            self.snake.y.append(self.food.y)
 
     def on_render(self):
-        self._display_surf.fill(config.BACKGROUND)  # 背景
-        self.snake.draw(self._display_surf, self._image_surf)
+        self._display_surf.fill(config.BACKGROUND)  # 重新渲染背景
+        self.snake.draw(self._display_surf, self._snake_surf)
         self.food.draw(self._display_surf, self._food_surf)
         pygame.display.flip()
 
-    def on_cleanup(self):
-        pygame.quit()
-
-    def on_execute(self):
-        self.on_init()
-
+    def execute(self):
+        self.init_element_surf()
         clock = pygame.time.Clock()
         while self._running:
             for event in pygame.event.get():
                 if event.type == QUIT:
-                    self.on_cleanup()  # 接收到退出事件后，退出程序
+                    self.quit()  # 接收到退出事件后，退出程序
                 elif event.type == KEYDOWN:
                     if event.key == K_RIGHT and self.snake.direction != 1:  # 不能倒着走
                         self.snake.move_right()
@@ -190,27 +196,35 @@ class Game:
                         self._running = False
             self.on_loop()
             self.on_render()
-            frame_rate = clock.tick(5)  # 帧率, 也对于蛇的移动速度
-        self.on_cleanup()
+            clock.tick(5)  # 帧率, 也对于蛇的移动速度
+
+    def quit(self):
+        pygame.quit()
+
+    def restart(self):
+        self.init_element()
+        self.execute()
 
     def start(self):
-        self.on_init()
-        font = pygame.font.SysFont("arial", 50)
-        tip = font.render('Start Icon Snake Game!!!', True, (255, 255, 255))
-        self._display_surf.blit(tip, ((self.window_width-tip.get_width())/2, (self.window_height-tip.get_height())/2))
+        self.init_display_surf()
+        self.init_word_surf()
         pygame.display.update()
-        clock = pygame.time.Clock()
 
+        clock = pygame.time.Clock()
+        fail_flag = False
         while True:  # 键盘监听事件
-            for event in pygame.event.get():  # event handling loop
+            for event in pygame.event.get():
                 if event.type == QUIT:
-                    self.on_cleanup()
+                    self.quit()
                 elif event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:  # 终止程序
-                        self.on_cleanup()  # 终止程序
+                    if event.key == K_ESCAPE:
+                        self.quit()  # 终止程序
+                    elif not fail_flag:
+                        self.execute()
+                        fail_flag = True
                     else:
-                        self.on_execute()
-            frame_rate = clock.tick(10)  # 帧率,
+                        self.restart()
+            clock.tick(5)
 
 
 if __name__ == "__main__":

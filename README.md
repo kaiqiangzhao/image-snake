@@ -5,3 +5,6 @@
 1. 食物
 2. 贪吃蛇
 3. 草地(窗口)
+
+# 静态文件(static)
+weimijianshu.otf 中文字体
