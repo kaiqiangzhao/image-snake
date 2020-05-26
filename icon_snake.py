@@ -76,12 +76,14 @@ class Game:
         self._food_surf = None
         self.snake = None
         self.food = None
+        self.col = self.window_width // config.FOOD_SIZE[0] - 1
+        self.row = self.window_height // config.FOOD_SIZE[1] - 1
         self.init_element()
 
     def rand_food_position(self):
         # TODO: 保证食物不会出现在蛇身体上
-        rand_x = randint(0, self.window_width - config.FOOD_SIZE[0])
-        rand_y = randint(0, self.window_height - config.FOOD_SIZE[1])
+        rand_x = randint(0, self.col) * config.FOOD_SIZE[0]
+        rand_y = randint(0, self.row) * config.FOOD_SIZE[1]
         return rand_x, rand_y
 
     def is_collision_self(self, x1, y1, x2, y2):
