@@ -9,6 +9,10 @@
 # 静态文件(static)
 weimijianshu.otf 中文字体
 
+# 注意事项
+1.食物不能出现在蛇身体上
+
+
 # 参考文献
 https://pythonspot.com/snake-with-pygame/
 https://blog.csdn.net/ggPanda/article/details/23163829

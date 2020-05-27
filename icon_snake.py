@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from pygame.locals import *
+import random
 from random import randint
 import pygame
 import config
@@ -76,14 +77,21 @@ class Game:
         self._food_surf = None
         self.snake = None
         self.food = None
-        self.col = self.window_width // config.FOOD_SIZE[0] - 1
-        self.row = self.window_height // config.FOOD_SIZE[1] - 1
+        self.col = self.window_width // config.FOOD_SIZE[0] - 1  # 列数
+        self.row = self.window_height // config.FOOD_SIZE[1] - 1  # 行数
         self.init_element()
 
     def rand_food_position(self):
-        # TODO: 保证食物不会出现在蛇身体上
-        rand_x = randint(0, self.col) * config.FOOD_SIZE[0]
-        rand_y = randint(0, self.row) * config.FOOD_SIZE[1]
+        # TODO: 寻找更好的数据结构和算法, 减少数据类型转换
+        empty_points = set([(i, j) for i in range(self.col+1) for j in range(self.row+1)])
+        snake_points = set([(i//self.snake.step, j//self.snake.step) for i, j in zip(self.snake.x, self.snake.y)])
+        empty_points.difference_update(snake_points)
+        rand_point = random.choice(list(empty_points))
+        if not rand_point:
+            self._running = False
+            return 0, 0
+        rand_x = rand_point[0] * config.FOOD_SIZE[0]
+        rand_y = rand_point[1] * config.FOOD_SIZE[1]
         return rand_x, rand_y
 
     def is_collision_self(self, x1, y1, x2, y2):
@@ -133,7 +141,7 @@ class Game:
         pygame.display.set_caption("Icon Snake")
 
     def init_word_surf(self):
-        font = pygame.font.Font("static/weimijianshu.otf", 50)
+        font = pygame.font.Font("static/weimijianshu.otf", self.window_width//16)
         tip = font.render('按任意键开始 Icon Snake!!!', True, config.FONT_COLOR)
         self._display_surf.blit(tip, ((self.window_width - tip.get_width()) / 2, (self.window_height - tip.get_height()) / 2))
 
