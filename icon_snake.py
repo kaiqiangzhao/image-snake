@@ -138,7 +138,9 @@ class Game:
         pygame.init()
         self._display_surf = pygame.display.set_mode((self.window_width, self.window_height), 0, 32)
         self._display_surf.fill(config.BACKGROUND)  # 背景
+        logo_surf = pygame.image.load("static/icon-256.png").convert()
         pygame.display.set_caption("Icon Snake")
+        pygame.display.set_icon(logo_surf)
 
     def init_word_surf(self):
         font = pygame.font.Font("static/weimijianshu.otf", self.window_width//16)
