@@ -12,7 +12,10 @@ weimijianshu.otf 中文字体
 # 注意事项
 1.食物不能出现在蛇身体上
 
+2.圆角png图片, 四角出现黑色
+
 
 # 参考文献
 https://pythonspot.com/snake-with-pygame/
+
 https://blog.csdn.net/ggPanda/article/details/23163829

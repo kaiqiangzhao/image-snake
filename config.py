@@ -12,3 +12,8 @@ SNAKE_INIT_LEN = 3  # 蛇初始长度
 
 FOOD_SIZE = (50, 50)  # 食物节点大小
 SNAKE_NODE_SIZE = (50, 50)  # 蛇节点大小
+
+# 其他
+BORDER_WIDTH = 1
+BORDER_COLOR = (190, 190, 190)
+

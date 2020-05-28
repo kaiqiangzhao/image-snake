@@ -15,6 +15,18 @@ class Food:
         self.y = y
 
     def draw(self, surface, image):
+        pygame.draw.rect(
+            surface,
+            config.BORDER_COLOR,
+            (
+                self.x - config.BORDER_WIDTH,
+                self.y - config.BORDER_WIDTH,
+                config.SNAKE_NODE_SIZE[0] + 2 * config.BORDER_WIDTH,
+                config.SNAKE_NODE_SIZE[1] + 2 * config.BORDER_WIDTH
+            ),
+            config.BORDER_WIDTH,
+            border_radius=8
+        )
         surface.blit(image, (self.x, self.y))
 
 
@@ -63,6 +75,18 @@ class Snake:
 
     def draw(self, surface, image):
         for i in range(0, self.length):
+            pygame.draw.rect(
+                surface,
+                config.BORDER_COLOR,
+                (
+                    self.x[i]-config.BORDER_WIDTH,
+                    self.y[i]-config.BORDER_WIDTH,
+                    config.SNAKE_NODE_SIZE[0]+2*config.BORDER_WIDTH,
+                    config.SNAKE_NODE_SIZE[1]+2*config.BORDER_WIDTH
+                 ),
+                config.BORDER_WIDTH,
+                border_radius=8
+            )
             surface.blit(image, (self.x[i], self.y[i]))
 
 
@@ -130,7 +154,9 @@ class Game:
 
     def is_collision_win(self, x1, y1):
         # 是否碰撞到墙壁
-        if 0 <= x1 <= self.window_width and 0 <= y1 <= self.window_height:
+        # TODO: 待优化, 检测不准
+        if 0 <= x1 + config.SNAKE_NODE_SIZE[0] <= self.window_width \
+                and 0 <= y1 + config.SNAKE_NODE_SIZE[1] <= self.window_height:
             return False
         return True
 
@@ -138,7 +164,7 @@ class Game:
         pygame.init()
         self._display_surf = pygame.display.set_mode((self.window_width, self.window_height), 0, 32)
         self._display_surf.fill(config.BACKGROUND)  # 背景
-        logo_surf = pygame.image.load("static/icon-256.png").convert()
+        logo_surf = pygame.image.load("static/icon-256.png").convert_alpha()
         pygame.display.set_caption("Icon Snake")
         pygame.display.set_icon(logo_surf)
 
@@ -150,11 +176,11 @@ class Game:
     def init_element_surf(self):
         self._running = True
         self._snake_surf = pygame.transform.scale(
-            pygame.image.load("./icon_basket/block.png").convert(),
+            pygame.image.load("./icon_basket/block.png").convert_alpha(),
             config.SNAKE_NODE_SIZE
         )
         self._food_surf = pygame.transform.scale(
-            pygame.image.load("./icon_basket/food.png").convert(),
+            pygame.image.load("./icon_basket/food.png").convert_alpha(),
             config.FOOD_SIZE,
         )
 
