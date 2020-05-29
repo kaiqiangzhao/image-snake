@@ -3,7 +3,6 @@
 
 from pygame.locals import *
 import random
-from random import randint
 import pygame
 import config
 
@@ -154,9 +153,8 @@ class Game:
 
     def is_collision_win(self, x1, y1):
         # 是否碰撞到墙壁
-        # TODO: 待优化, 检测不准
-        if 0 <= x1 + config.SNAKE_NODE_SIZE[0] <= self.window_width \
-                and 0 <= y1 + config.SNAKE_NODE_SIZE[1] <= self.window_height:
+        if 0 <= x1 + config.SNAKE_NODE_SIZE[0]/2 <= self.window_width \
+                and 0 <= y1 + config.SNAKE_NODE_SIZE[1]/2 <= self.window_height:
             return False
         return True
 
