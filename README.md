@@ -10,9 +10,9 @@
 weimijianshu.otf 中文字体
 
 # demo
-[demo1](https://github.com/kaiqiangzhao/IconSnake/blob/master/static/demo1.png)
+![demo1](https://github.com/kaiqiangzhao/IconSnake/blob/master/static/demo1.png)
 
-[demo2](https://github.com/kaiqiangzhao/IconSnake/blob/master/static/demo2.png)
+![demo2](https://github.com/kaiqiangzhao/IconSnake/blob/master/static/demo2.png)
 
 # 注意事项
 1.食物不能出现在蛇身体上
