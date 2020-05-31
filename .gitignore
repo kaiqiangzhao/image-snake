@@ -135,8 +135,8 @@ dmypy.json
 *.DS_Store
 
 # icon image
-./static/game_icon.png
-./icon_basket/spider/*.png
+static/game_icon.png
+icon_basket/spider/*.png
 **/icon_basket/foods/*
 !**/icon_basket/foods/first_food.png
 
