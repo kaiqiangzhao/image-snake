@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 from pygame.locals import *
 import random
 import pygame
@@ -12,8 +13,12 @@ class Food:
         # 初始化食物的位置
         self.x = x
         self.y = y
+        self.icon = pygame.transform.scale(
+                pygame.image.load("icon_basket/snake/tail.png").convert_alpha(),
+                config.SNAKE_NODE_SIZE
+        )
 
-    def draw(self, surface, image):
+    def draw(self, surface):
         pygame.draw.rect(
             surface,
             config.BORDER_COLOR,
@@ -24,13 +29,14 @@ class Food:
                 config.SNAKE_NODE_SIZE[1] + 2 * config.BORDER_WIDTH
             ),
             config.BORDER_WIDTH,
-            border_radius=8
+            border_radius=config.BORDER_RADIUS
         )
-        surface.blit(image, (self.x, self.y))
+        if self.icon:
+            surface.blit(self.icon, (self.x, self.y))
 
 
 class Snake:
-    def __init__(self, length=3, direction=0, step=50):
+    def __init__(self, length=2, step=50):
         """
         length: 初始长度
         direction: 初始方向
@@ -38,14 +44,29 @@ class Snake:
         """
         self.x = []
         self.y = []
+        self.icons = []
         self.step = step
         self.length = length
-        self.direction = direction
+        self.direction = 0
 
         # 初始化
         for i in range(length-1, -1, -1):
             self.x.append(i * step)
             self.y.append(0)
+
+        head = pygame.transform.rotate(
+            pygame.transform.scale(
+                pygame.image.load("icon_basket/snake/head.png").convert_alpha(),
+                config.SNAKE_NODE_SIZE
+            ),
+            -90
+        )
+        tail = pygame.transform.scale(
+            pygame.image.load("icon_basket/snake/tail.png").convert_alpha(),
+            config.SNAKE_NODE_SIZE
+        )
+        self.head = [head]
+        self.tail = [tail]
 
     def update(self):
         for i in range(self.length-1, 0, -1):
@@ -61,18 +82,46 @@ class Snake:
             self.y[0] = self.y[0] + self.step
 
     def move_right(self):
+        if self.direction == 2:
+            angle = -90
+        else:
+            angle = 90
+        for index, img in enumerate(self.head):
+            self.head[index] = pygame.transform.rotate(img, angle)
         self.direction = 0
 
     def move_left(self):
+        if self.direction == 2:
+            angle = 90
+        else:
+            angle = -90
+        for index, img in enumerate(self.head):
+            self.head[index] = pygame.transform.rotate(img, angle)
         self.direction = 1
 
     def move_up(self):
+        if self.direction == 0:
+            angle = 90
+        else:
+            angle = -90
+        for index, img in enumerate(self.head):
+            self.head[index] = pygame.transform.rotate(img, angle)
         self.direction = 2
 
     def move_down(self):
+        if self.direction == 0:
+            angle = -90
+        else:
+            angle = 90
+        for index, img in enumerate(self.head):
+            self.head[index] = pygame.transform.rotate(img, angle)
         self.direction = 3
 
-    def draw(self, surface, image):
+    def draw(self, surface):
+        all_icons = []
+        if self.length == 3 and self.icons:
+            self.tail.append(self.icons.pop())
+        all_icons.extend([*self.head, *self.icons, *self.tail])
         for i in range(0, self.length):
             pygame.draw.rect(
                 surface,
@@ -84,9 +133,9 @@ class Snake:
                     config.SNAKE_NODE_SIZE[1]+2*config.BORDER_WIDTH
                  ),
                 config.BORDER_WIDTH,
-                border_radius=8
+                border_radius=config.BORDER_RADIUS
             )
-            surface.blit(image, (self.x[i], self.y[i]))
+            surface.blit(all_icons[i], (self.x[i], self.y[i]))
 
 
 class Game:
@@ -100,9 +149,9 @@ class Game:
         self._food_surf = None
         self.snake = None
         self.food = None
+        self.foods = [os.path.join(config.FOOD_ICON_PATH, fname) for fname in os.listdir(config.FOOD_ICON_PATH)]
         self.col = self.window_width // config.FOOD_SIZE[0] - 1  # 列数
         self.row = self.window_height // config.FOOD_SIZE[1] - 1  # 行数
-        self.init_element()
 
     def rand_food_position(self):
         # TODO: 寻找更好的数据结构和算法, 减少数据类型转换
@@ -162,25 +211,15 @@ class Game:
         pygame.init()
         self._display_surf = pygame.display.set_mode((self.window_width, self.window_height), 0, 32)
         self._display_surf.fill(config.BACKGROUND)  # 背景
-        logo_surf = pygame.image.load("static/icon-256.png").convert_alpha()
+        if os.path.exists("static/game_icon.png"):
+            logo_surf = pygame.image.load("static/game_icon.png").convert_alpha()
+            pygame.display.set_icon(logo_surf)
         pygame.display.set_caption("Icon Snake")
-        pygame.display.set_icon(logo_surf)
 
     def init_word_surf(self):
         font = pygame.font.Font("static/weimijianshu.otf", self.window_width//16)
         tip = font.render('按任意键开始 Icon Snake!!!', True, config.FONT_COLOR)
         self._display_surf.blit(tip, ((self.window_width - tip.get_width()) / 2, (self.window_height - tip.get_height()) / 2))
-
-    def init_element_surf(self):
-        self._running = True
-        self._snake_surf = pygame.transform.scale(
-            pygame.image.load("./icon_basket/block.png").convert_alpha(),
-            config.SNAKE_NODE_SIZE
-        )
-        self._food_surf = pygame.transform.scale(
-            pygame.image.load("./icon_basket/food.png").convert_alpha(),
-            config.FOOD_SIZE,
-        )
 
     def init_element(self):
         self.snake = Snake(length=config.SNAKE_INIT_LEN)
@@ -201,38 +240,44 @@ class Game:
 
         # 把食物当成蛇的一部分进行碰撞检测
         if self.is_collision_food(self.snake.x[0], self.snake.y[0], self.food.x, self.food.y):
-            self.food.x, self.food.y = self.rand_food_position()
             self.snake.length = self.snake.length + 1
             self.snake.x.append(self.food.x)
             self.snake.y.append(self.food.y)
+            self.snake.icons.append(self.food.icon)
+            self.food.x, self.food.y = self.rand_food_position()
+            self.food.icon = pygame.transform.scale(
+                pygame.image.load(random.choice(self.foods)).convert_alpha(),
+                config.FOOD_SIZE
+            )
 
     def on_render(self):
         self._display_surf.fill(config.BACKGROUND)  # 重新渲染背景
-        self.snake.draw(self._display_surf, self._snake_surf)
-        self.food.draw(self._display_surf, self._food_surf)
+        self.snake.draw(self._display_surf)
+        self.food.draw(self._display_surf)
         pygame.display.flip()
 
     def execute(self):
-        self.init_element_surf()
+        self.init_element()
+        self._running = True
         clock = pygame.time.Clock()
         while self._running:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.quit()  # 接收到退出事件后，退出程序
                 elif event.type == KEYDOWN:
-                    if event.key == K_RIGHT and self.snake.direction != 1:  # 不能倒着走
+                    if event.key == K_RIGHT and self.snake.direction != 1 and self.snake.direction != 0:  # 不能倒着走
                         self.snake.move_right()
-                    elif event.key == K_LEFT and self.snake.direction != 0:
+                    elif event.key == K_LEFT and self.snake.direction != 0 and self.snake.direction != 1:
                         self.snake.move_left()
-                    elif event.key == K_UP and self.snake.direction != 3:
+                    elif event.key == K_UP and self.snake.direction != 3 and self.snake.direction != 2:
                         self.snake.move_up()
-                    elif event.key == K_DOWN and self.snake.direction != 2:
+                    elif event.key == K_DOWN and self.snake.direction != 2 and self.snake.direction != 3:
                         self.snake.move_down()
                     elif event.key == K_ESCAPE:
                         self._running = False
             self.on_loop()
             self.on_render()
-            clock.tick(5)  # 帧率, 也对于蛇的移动速度
+            clock.tick(7)  # 帧率, 也对于蛇的移动速度
 
     def quit(self):
         pygame.quit()

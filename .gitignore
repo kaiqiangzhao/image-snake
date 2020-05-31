@@ -130,3 +130,11 @@ dmypy.json
 
 # Pycharm connfig
 .idea/
+
+# icon image
+./static/game_icon.png
+./icon_basket/spider/*
+**/icon_basket/foods/*
+!**/icon_basket/foods/first_food.png
+
+
