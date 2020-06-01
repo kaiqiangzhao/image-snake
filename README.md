@@ -10,8 +10,11 @@
 weimijianshu.otf 中文字体
 
 # demo
+
+- 游戏开始(吃第一个食物)
 ![demo1](https://github.com/kaiqiangzhao/IconSnake/blob/master/static/demo1.png)
 
+- 游戏过程
 ![demo2](https://github.com/kaiqiangzhao/IconSnake/blob/master/static/demo2.png)
 
 # 注意事项
