@@ -101,16 +101,22 @@ class Game:
         # 寻找空白的坐标点
         pass
 
-    def ready_start(self):
-        # 开始界面
-        pass
-
     def start(self):
         # 真正开始
         pass
 
-    def quit(self):
-        pass
-
     def restart(self):
         pass
+
+    def stop(self):
+        pass
+
+    def enter(self):
+        # 开始界面
+        pass
+
+    def quit(self):
+        # 退出
+        pass
+
+

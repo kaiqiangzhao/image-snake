@@ -28,6 +28,10 @@ weimijianshu.otf 中文字体
 
 4.pygame不支持圆角转换图片, 爬取的图标非圆角, 需要用其他库圆角化图片
 
+# 其它
+
+你可以更换foods文件夹内的图片, 做成你想要的样子.
+
 # 参考文献
 https://pythonspot.com/snake-with-pygame/
 

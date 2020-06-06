@@ -14,7 +14,7 @@ class Food:
         self.x = x
         self.y = y
         self.icon = pygame.transform.scale(
-                pygame.image.load("icon_basket/snake/tail.png").convert_alpha(),
+                pygame.image.load("icon_basket/foods/first_food.png").convert_alpha(),
                 config.SNAKE_NODE_SIZE
         )
 
@@ -149,7 +149,8 @@ class Game:
         self._food_surf = None
         self.snake = None
         self.food = None
-        self.foods = [os.path.join(config.FOOD_ICON_PATH, fname) for fname in os.listdir(config.FOOD_ICON_PATH)]
+        self.foods = [os.path.join(config.FOOD_ICON_PATH, fname) for fname in os.listdir(config.FOOD_ICON_PATH) if fname.endswith("png")]
+        self.foods.remove("icon_basket/foods/first_food.png")
         self.col = self.window_width // config.FOOD_SIZE[0] - 1  # 列数
         self.row = self.window_height // config.FOOD_SIZE[1] - 1  # 行数
 
@@ -245,8 +246,13 @@ class Game:
             self.snake.y.append(self.food.y)
             self.snake.icons.append(self.food.icon)
             self.food.x, self.food.y = self.rand_food_position()
-            self.food.icon = pygame.transform.scale(
-                pygame.image.load(random.choice(self.foods)).convert_alpha(),
+            if not self.foods:
+                self._running = False
+                return None
+            imgs_path = random.choice(self.foods)
+            self.foods.remove(imgs_path)
+            self.food.icon = pygame.transform.smoothscale(
+                pygame.image.load(imgs_path).convert_alpha(),
                 config.FOOD_SIZE
             )
 
