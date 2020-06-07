@@ -149,8 +149,7 @@ class Game:
         self._food_surf = None
         self.snake = None
         self.food = None
-        self.foods = [os.path.join(config.FOOD_ICON_PATH, fname) for fname in os.listdir(config.FOOD_ICON_PATH) if fname.endswith("png")]
-        self.foods.remove("icon_basket/foods/first_food.png")
+        self.foods = None
         self.col = self.window_width // config.FOOD_SIZE[0] - 1  # 列数
         self.row = self.window_height // config.FOOD_SIZE[1] - 1  # 行数
 
@@ -226,6 +225,15 @@ class Game:
         self.snake = Snake(length=config.SNAKE_INIT_LEN)
         rand_x, rand_y = self.rand_food_position()
         self.food = Food(rand_x, rand_y)
+        self.foods = [os.path.join(config.FOOD_ICON_PATH, fname) for fname in os.listdir(config.FOOD_ICON_PATH) if fname.endswith("png")]
+        self.foods.remove("icon_basket/foods/first_food.png")
+        # 打乱原有顺序
+        random.shuffle(self.foods)
+        # 插入定制顺序的图片
+        food_vip_path = "icon_basket/foods_vip/"
+        if os.path.exists(food_vip_path):
+            for img_name in sorted(os.listdir("icon_basket/foods_vip/")):
+                self.foods.insert(int(img_name.split(".")[0]), os.path.join(food_vip_path, img_name))
 
     def on_loop(self):
         self.snake.update()
@@ -249,8 +257,9 @@ class Game:
             if not self.foods:
                 self._running = False
                 return None
-            imgs_path = random.choice(self.foods)
-            self.foods.remove(imgs_path)
+            # imgs_path = random.choice(self.foods)
+            # self.foods.remove(imgs_path)
+            imgs_path = self.foods.pop(0)
             self.food.icon = pygame.transform.smoothscale(
                 pygame.image.load(imgs_path).convert_alpha(),
                 config.FOOD_SIZE
@@ -283,7 +292,7 @@ class Game:
                         self._running = False
             self.on_loop()
             self.on_render()
-            clock.tick(7)  # 帧率, 也对于蛇的移动速度
+            clock.tick(6)  # 帧率, 也对于蛇的移动速度
 
     def quit(self):
         pygame.quit()
