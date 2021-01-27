@@ -20,11 +20,11 @@
 
 ## 游戏开始(吃第一个食物)
 
-![demo1](https://github.com/kaiqiangzhao/IconSnake/blob/master/static/demo1.png)
+![demo1](https://github.com/kaiqiangzhao/imageSnake/blob/master/static/demo/demo1.png)
 
 ## 游戏过程
 
-![demo2](https://github.com/kaiqiangzhao/IconSnake/blob/master/static/demo2.png)
+![demo2](https://github.com/kaiqiangzhao/imageSnake/blob/master/static/demo/demo2.png)
 
 
 # 运行
