@@ -1,4 +1,4 @@
-# imageSnake
+# image-snake
 
 图片贪吃蛇：由图片构成身体部分的贪吃蛇(也许不能算是个游戏)
 
@@ -12,7 +12,7 @@
 
 后来想到了不断的吃APP的应用的图标的贪吃蛇来做视频开头。
 
-于是乎，就有了imageSnake。(不知道还有哪些应用场景)
+于是乎，就有了image-snake。(不知道还有哪些应用场景)
 
 你可以更换foods文件夹内的图片, 做成你想要的样子.
 
@@ -20,11 +20,11 @@
 
 ## 游戏开始(吃第一个食物)
 
-![demo1](https://github.com/kaiqiangzhao/imageSnake/blob/master/static/demo/demo1.png)
+![demo1](https://github.com/kaiqiangzhao/image-snake/blob/master/static/demo/demo1.png)
 
 ## 游戏过程
 
-![demo2](https://github.com/kaiqiangzhao/imageSnake/blob/master/static/demo/demo2.png)
+![demo2](https://github.com/kaiqiangzhao/image-snake/blob/master/static/demo/demo2.png)
 
 
 # 运行
