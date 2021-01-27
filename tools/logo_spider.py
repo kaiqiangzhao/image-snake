@@ -41,7 +41,7 @@ def download_img(url, name, path):
 
 def main():
     url = "https://www.appannie.com/cn/apps/ios/top/china/social-networking/ipad/"
-    save_path = "icon_basket/spider"
+    save_path = "imgs/spider"
     html = get_html(url)
     imgs = get_img(html)
     count = 0

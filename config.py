@@ -1,20 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# 窗口设置
-BACKGROUND = (255, 255, 255)  # 窗口背景颜色
-WINDOW_WIDTH = 800  # 窗口宽度
-WINDOW_HEIGHT = 600  # 窗口高度
-FONT_COLOR = (0, 0, 0)
+class GameConfig:
+    # 窗口
+    win_width = 800
+    win_height = 600
+    win_bg_color = (255, 255, 255)
 
-# 贪吃蛇设置
-SNAKE_INIT_LEN = 2  # 蛇初始长度
+    # 游戏
+    game_logo = "static/logo.png"
+    game_name = "Image Snake"
+    game_font_path = "static/weimijianshu.otf"
+    game_font_color = (0, 0, 0)
 
-FOOD_SIZE = (50, 50)  # 食物节点大小
-FOOD_ICON_PATH = "icon_basket/foods"
-SNAKE_NODE_SIZE = (50, 50)  # 蛇节点大小
+    # 结点
+    node_width = 50
+    node_height = 50
+    node_border_width = 1
+    node_border_color = (214, 214, 214)
+    node_border_radius = 9
 
-# 其他
-BORDER_WIDTH = 1
-BORDER_COLOR = (214, 214, 214)
-BORDER_RADIUS = 9
+    # 蛇
+    snake_head_img = "imgs/head.png"
+    snake_tail_img = "imgs/tail.png"
+    snake_move_speed = 10  # 越大越快
+
+    # 食物
+    first_food_img = "imgs/first_food.png"
+    food_imgs = "imgs/foods"  # 图片文件
+    is_order_food = True  # 是否按名称排序图片

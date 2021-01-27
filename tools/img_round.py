@@ -32,10 +32,10 @@ def circle_corner(img, radii):
 
 if __name__ == '__main__':
     radii = 50
-    imgs_path = "icon_basket/spider"
+    imgs_path = "imgs/spider"
     for root, dirs, files in os.walk(imgs_path):
         for file in files:
-            save_path = "./icon_basket/foods"
+            save_path = "./imgs/foods"
             if file.find(".png") != -1:
                 print(file)
                 full_path = os.path.join(root, file)
